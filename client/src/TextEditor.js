@@ -3,6 +3,10 @@ import "quill/dist/quill.snow.css";
 import Quill from "quill";
 import {io} from 'socket.io-client';
 import {useParams, userParams} from 'react-router-dom';
+import ImageResize  from 'quill-image-resize-module-react';
+import { ImageDrop } from 'quill-image-drop-module'
+Quill.register('modules/imageResize', ImageResize);
+Quill.register('modules/imageDrop', ImageDrop)
 
 const SAVE_INTERVAL = 2000
 const TOOLBAR_OPTIONS = [
@@ -22,7 +26,6 @@ const TOOLBAR_OPTIONS = [
     [{ 'font': [] }],
     [{ 'align': [] }],
     ['image', 'link'],
-  
     ['clean']     
   ]
 
@@ -91,7 +94,10 @@ export default function TextEditor() {
     wrapper.innerHTML = ''
     const editor = document.createElement("div")
     wrapper.append(editor)
-    const q = new Quill(editor, { theme: "snow", modules: {toolbar: TOOLBAR_OPTIONS} })
+    const q = new Quill(editor, { theme: "snow", modules: {toolbar: TOOLBAR_OPTIONS, imageDrop: true, imageResize: {
+        parchment: Quill.import('parchment'),
+        modules: [ 'Resize', 'DisplaySize', 'Toolbar' ]
+    }} })
     q.enable(false)
     q.setText('Loading... Please Wait')
     setQuill(q)
